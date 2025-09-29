@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwality Wall’s - Hackathon MVP</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* Floating animation */
+@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);} }
+.float { animation: float 4s ease-in-out infinite; }
+
+/* Card styles */
+.perspective { perspective: 1000px; }
+.preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+.product-card:hover { transform: scale(1.05) rotateX(2deg) rotateY(2deg); transition:0.5s; }
+
+/* Wheel animation */
+#wheel { transition: transform 4s cubic-bezier(0.33,1,0.68,1); }
+
+/* Parallax backgrounds */
+#brands-bg,#gallery-bg { position:absolute; inset:0; z-index:-10; will-change: transform; }
+
+/* Falling ice creams */
+.icecream { position: fixed; width: 40px; pointer-events:none; animation: fall linear infinite; }
+@keyframes fall {0%{transform:translateY(-50px) rotate(0deg);opacity:1;}100%{transform:translateY(120vh) rotate(360deg);opacity:0;}}
+
+/* Badge styles */
+.badge { background: linear-gradient(90deg,#fb7185,#fbba72); color:white; font-weight:bold; padding:2px 10px; border-radius:16px; margin-right:6px; display:inline-block; font-size: 0.85rem; }
+
+@keyframes unbox {0%{transform:scaleY(0);opacity:0;}50%{transform:scaleY(1.1);opacity:1;}100%{transform:scaleY(1);opacity:1;}}
+.unbox-animate { animation: unbox 0.8s ease; }
+
+.memory-card,
+.scoop-card {
+  background: linear-gradient(135deg,#fff 80%,#fbbf24 120%);
+  border-radius: 16px;
+  box-shadow: 0 2px 24px 0 rgba(251,56,72,.18);
+  padding: .5rem;
+  min-height: 6rem;
+}
+
+/* Mini-game highlight */
+.scoop-card.selected,.memory-card.selected {outline:2px solid #ef4444;}
+/* Melting Animation */
+@keyframes melt {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(1.05) translateY(5px); }
+  100% { transform: scaleY(0.95) translateY(15px); }
+}
+.animate-melt {
+  animation: melt 4s ease-in-out infinite alternate;
+}
+
+/* Water Drop Shape */
+.water-drop {
+  clip-path: ellipse(40% 60% at 50% 35%);
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  box-shadow: 0 4px 10px rgba(0, 0, 255, 0.3);
+}
+
+/* Drip Animation */
+@keyframes drip {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  70%  { transform: translateY(40px) scale(0.9); opacity: 0.8; }
+  100% { transform: translateY(70px) scale(0.7); opacity: 0; }
+}
+.animate-drip {
+  animation: drip 2.5s infinite ease-in;
+}
+
+
+</style>
+</head>
+<body class="bg-pink-50 font-sans overflow-x-hidden">
+
+<!-- Navbar -->
+<nav class="flex justify-between items-center p-6 bg-white shadow-md sticky top-0 z-50">
+<h1 class="text-2xl font-extrabold text-red-500">Kwality Wall’s</h1>
+<ul class="hidden md:flex gap-8 text-gray-700 font-semibold">
+<li><a href="#home" class="hover:text-red-500">Home</a></li>
+<li><a href="#products" class="hover:text-red-500">Products</a></li>
+<li><a href="#brands" class="hover:text-red-500">Our Brands</a></li>
+<li><a href="#fun" class="hover:text-red-500">Fun</a></li>
+<li><a href="#gallery" class="hover:text-red-500">Gallery</a></li>
+<li><a href="#community" class="hover:text-red-500">Community Wall</a></li>
+<li><a href="#reviews" class="hover:text-red-500">Reviews</a></li>
+<li><a href="#faq" class="hover:text-red-500">FAQ</a></li>
+<li><a href="#contact" class="hover:text-red-500">Contact</a></li>
+</ul>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="relative h-screen bg-gradient-to-r from-pink-400 to-red-500 flex items-center justify-center text-white text-center overflow-hidden">
+<img src="assets/cone1.jpg" class="absolute top-20 left-10 float" alt="cone"/>
+<img src="assets/cup.jpg" class="absolute bottom-20 right-16 float" alt="cup"/>
+<div class="relative z-10 p-6">
+<h1 class="text-6xl font-extrabold mb-4 drop-shadow-lg">Delight in Every Bite</h1>
+<p class="text-xl mb-6">Ice creams, sundaes, cones & cakes – happiness in every scoop 🍦</p>
+<a href="#products" class="px-6 py-3 bg-yellow-300 text-red-700 rounded-full text-lg font-bold hover:bg-yellow-400 transition shadow-lg">Explore Treats</a>
+</div>
+</section>
+
+<!-- Products Section with Animated Unboxing -->
+<section id="products" class="py-16 px-8 bg-white text-center">
+<h2 class="text-4xl font-bold mb-10">Our Delicious Range</h2>
+<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+
+<!-- Ice Cream Tub -->
+<div class="group perspective product-card">
+  <div class="relative w-full h-64 transition-transform duration-500 preserve-3d group-hover:rotate-y-180">
+    <div class="absolute inset-0 bg-white shadow-lg rounded-2xl overflow-hidden backface-hidden">
+      <img src="assets/img3.jpg" class="w-full h-40 object-cover unbox-image" alt="Ice Cream Tub">
+      <h3 class="font-semibold text-lg mt-2">Ice Cream Tubs</h3>
+    </div>
+    <div class="absolute inset-0 bg-red-100 rounded-2xl p-4 rotate-y-180 backface-hidden flex flex-col justify-center items-center">
+      <p class="mb-2">Rich & creamy tubs, perfect for family fun.</p>
+      <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Add to Cart 🛒</button>
+      <!-- Unboxing animation visual -->
+      <div class="hidden mt-4 flex flex-col items-center unbox-container">
+        <img src="assets/unbox-tub.png" class="w-16 h-16 mb-2" alt="unbox">
+        <span>Layers of chocolate & vanilla!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cone -->
+<div class="group perspective product-card">
+  <div class="relative w-full h-64 transition-transform duration-500 preserve-3d group-hover:rotate-y-180">
+    <div class="absolute inset-0 bg-white shadow-lg rounded-2xl overflow-hidden backface-hidden">
+      <img src="assets/cone1.jpg" class="w-full h-40 object-cover unbox-image" alt="Crispy Cone">
+      <h3 class="font-semibold text-lg mt-2">Crispy Cones</h3>
+    </div>
+    <div class="absolute inset-0 bg-red-100 rounded-2xl p-4 rotate-y-180 backface-hidden flex flex-col justify-center items-center">
+      <p class="mb-2">Classic crunchy cones, dipped in choco magic.</p>
+      <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Add to Cart 🛒</button>
+      <div class="hidden mt-4 flex flex-col items-center unbox-container">
+        <img src="assets/unbox-cone.png" class="w-16 h-16 mb-2" alt="unbox-cone">
+        <span>Choco-dipped tips! 🍫</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sundae -->
+<div class="group perspective product-card">
+  <div class="relative w-full h-64 transition-transform duration-500 preserve-3d group-hover:rotate-y-180">
+    <div class="absolute inset-0 bg-white shadow-lg rounded-2xl overflow-hidden backface-hidden">
+      <img src="assets/sundae.jpg" class="w-full h-40 object-cover unbox-image" alt="Sundae">
+      <h3 class="font-semibold text-lg mt-2">Sundaes</h3>
+    </div>
+    <div class="absolute inset-0 bg-red-100 rounded-2xl p-4 rotate-y-180 backface-hidden flex flex-col justify-center items-center">
+      <p class="mb-2">Layered delights with toppings galore.</p>
+      <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Add to Cart 🛒</button>
+      <div class="hidden mt-4 flex flex-col items-center unbox-container">
+        <img src="assets/sundae.jpg" class="w-16 h-16 mb-2" alt="unbox-sundae">
+        <span>Nuts, fudge & more!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cake -->
+<div class="group perspective product-card">
+  <div class="relative w-full h-64 transition-transform duration-500 preserve-3d group-hover:rotate-y-180">
+    <div class="absolute inset-0 bg-white shadow-lg rounded-2xl overflow-hidden backface-hidden">
+      <img src="assets/cake.jpg" class="w-full h-40 object-cover unbox-image" alt="Ice Cream Cake">
+      <h3 class="font-semibold text-lg mt-2">Cakes</h3>
+    </div>
+    <div class="absolute inset-0 bg-red-100 rounded-2xl p-4 rotate-y-180 backface-hidden flex flex-col justify-center items-center">
+      <p class="mb-2">Celebrate every occasion with ice cream cakes.</p>
+      <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Add to Cart 🛒</button>
+      <div class="hidden mt-4 flex flex-col items-center unbox-container">
+        <img src="assets/unbox-cake.png" class="w-16 h-16 mb-2" alt="unbox-cake">
+        <span>Cake, cream & crunch!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section>
+
+<!-- Brands Section with Parallax -->
+<section id="brands" class="relative py-16 px-8 bg-pink-100 text-center overflow-hidden">
+<div id="brands-bg"><img src="https://i.ibb.co/6rZkpwM/tub.png" class="absolute opacity-10 w-full h-full object-cover" alt="brands bg"></div>
+<h2 class="text-4xl font-bold mb-10 relative z-10">Our Iconic Brands 🌟</h2>
+<div class="grid md:grid-cols-3 gap-8 relative z-10">
+<div class="bg-white rounded-2xl shadow-lg p-6 hover:scale-105 transition">
+<img src="assets/cornetto.jpg" class="mx-auto h-20 mb-4" alt="cornetto">
+<p>Crispy cones with creamy ice cream – a global favorite!</p>
+</div>
+<div class="bg-white rounded-2xl shadow-lg p-6 hover:scale-105 transition">
+<img src="assets/belgian.jpg" class="mx-auto h-20 mb-4" alt="belgian">
+<p>Premium indulgence with Belgian chocolate coating.</p>
+</div>
+<div class="bg-white rounded-2xl shadow-lg p-6 hover:scale-105 transition">
+<img src="assets/tubs.jpg" class="mx-auto h-20 mb-4" alt="tubs">
+<p>Classic scoops & tubs loved by families everywhere.</p>
+</div>
+</div>
+</section>
+
+<!-- Fun Section with Mini-Games and Reward System -->
+<section id="fun" class="py-16 px-8 bg-gradient-to-r from-red-400 to-pink-500 text-center text-white">
+<h2 class="text-4xl font-bold mb-6">Spin the Wheel of Treats 🎡 <span id="user-badges"></span></h2>
+<p class="mb-6">Try your luck and win a sweet surprise! Earn <span class="badge">points</span> & <span class="badge">badges</span> by playing and exploring!</p>
+<div class="relative mx-auto w-64 h-64 border-8 border-white rounded-full flex items-center justify-center mb-6">
+<div id="wheel" class="absolute w-full h-full bg-gradient-to-tr from-yellow-300 to-pink-400 rounded-full flex items-center justify-center text-xl font-bold text-red-700">
+🍦 🍧 🍫 🍪
+</div>
+<button onclick="spinWheel()" class="absolute bottom-[-60px] px-6 py-3 bg-white text-red-500 font-semibold rounded-full hover:bg-yellow-300 transition">Spin Now</button>
+</div>
+<p id="wheel-result" class="mt-6 text-2xl font-bold"></p>
+<p id="reward-info" class="mt-3 text-lg"></p>
+
+<!-- SCOOP STACKING GAME -->
+<div class="mt-16 max-w-2xl mx-auto">
+<h3 class="text-2xl font-bold mb-2">Scoop Stacking Mini-game 🥄</h3>
+<p>Click as many scoops as you can stack in 15 seconds. Earn bonus points!</p>
+<div class="flex flex-wrap gap-2 mt-3" id="scoop-stack"></div>
+<button id="start-scoop" class="mt-2 mb-4 px-4 py-2 bg-yellow-300 text-red-700 rounded-lg font-bold hover:bg-yellow-400 transition">Start Stacking!</button>
+<span id="scoop-timer" class="font-bold ml-2"></span>
+<p id="scoop-result" class="text-lg mt-2"></p>
+</div>
+
+<!-- ICECREAM MEMORY MATCH GAME -->
+<div class="mt-16 max-w-2xl mx-auto">
+<h3 class="text-2xl font-bold mb-2">Ice Cream Memory Match 🍨</h3>
+<p>Flip to find pairs! Match all for a badge.</p>
+<div class="grid grid-cols-4 gap-2 mt-3" id="memory-grid"></div>
+<button id="start-memory" class="mt-2 mb-4 px-4 py-2 bg-yellow-300 text-red-700 rounded-lg font-bold hover:bg-yellow-400 transition">Start Game</button>
+<span id="memory-status" class="font-bold ml-2"></span>
+</div>
+</section>
+
+<!-- Gallery Section -->
+<section id="gallery" class="relative py-16 px-8 bg-white text-center overflow-hidden">
+<div id="gallery-bg"><img src="https://i.ibb.co/fvYgTfD/sundae.png" class="absolute opacity-10 w-full h-full object-cover" alt="gallery bg"></div>
+<h2 class="text-4xl font-bold mb-10 relative z-10">Sweet Gallery 📸</h2>
+<div class="grid md:grid-cols-3 gap-6 relative z-10">
+<img src="assets/cake0.jpg" class="rounded-2xl shadow-lg hover-scale" alt="cake0">
+<img src="assets/cake1.jpg" class="rounded-2xl shadow-lg hover-scale" alt="cake1">
+<img src="assets/cake2.jpg" class="rounded-2xl shadow-lg hover-scale" alt="cake2">
+</div>
+</section>
+
+<!-- Community Wall: User Submitted Images -->
+<section id="community" class="py-16 px-8 bg-pink-100 text-center">
+<h2 class="text-4xl font-bold mb-8">Community Wall: Share Your Moments 🎉</h2>
+<p class="mb-8">Upload your best Kwality Wall’s memories and join our wall of fame!</p>
+<form id="user-photo-form" class="max-w-lg mx-auto mb-8 flex flex-col md:flex-row items-center gap-4">
+  <input type="file" accept="image/*" id="user-photo" class="flex-1 p-3 rounded-lg border" required>
+  <input type="text" id="user-caption" placeholder="Caption (optional)" class="flex-1 p-3 rounded-lg border">
+  <button type="submit" class="px-6 py-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600">Upload</button>
+</form>
+<div id="community-wall" class="grid md:grid-cols-3 gap-8"></div>
+</section>
+
+<!-- Global Timeline Section -->
+<section id="timeline" class="py-16 px-8 bg-white text-center">
+<h2 class="text-4xl font-bold mb-8">Our Journey: Interactive Timeline</h2>
+<div class="relative w-full max-w-4xl mx-auto">
+<!-- Timeline bar -->
+<div class="absolute left-1/2 transform -translate-x-1/2 w-2 bg-gradient-to-b from-pink-400 to-red-500 h-full"></div>
+<!-- Timeline events -->
+<div id="timeline-events" class="relative z-10 space-y-16"></div>
+</div>
+</section>
+
+<!-- Reviews Section -->
+<section id="reviews" class="py-16 px-8 bg-pink-50 text-center">
+<h2 class="text-4xl font-bold mb-6">What Our Customers Say ❤</h2>
+<div class="grid gap-8 md:grid-cols-3">
+<div class="p-6 bg-pink-100 rounded-2xl shadow-md">⭐⭐⭐⭐⭐<p class="mt-2 text-gray-700">"The best ice cream cakes ever! My family loves them."</p><h4 class="mt-2 font-bold">– Ananya</h4></div>
+<div class="p-6 bg-pink-100 rounded-2xl shadow-md">⭐⭐⭐⭐⭐<p class="mt-2 text-gray-700">"Every scoop feels like happiness. Kwality Wall’s never disappoints."</p><h4 class="mt-2 font-bold">– Rahul</h4></div>
+<div class="p-6 bg-pink-100 rounded-2xl shadow-md">⭐⭐⭐⭐⭐<p class="mt-2 text-gray-700">"Cones are crispy, creamy, and simply the best treat!"</p><h4 class="mt-2 font-bold">– Priya</h4></div>
+</div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-16 px-8 bg-white text-center">
+<h2 class="text-4xl font-bold mb-8">Frequently Asked Questions ❓</h2>
+<div class="max-w-2xl mx-auto text-left space-y-6">
+<div><h4 class="font-bold">Q: Where can I order Kwality Wall’s?</h4><p>A: Available on Swiggy, Zomato, and local stores near you.</p></div>
+<div><h4 class="font-bold">Q: Do you offer dairy-free options?</h4><p>A: Yes! We have a growing range of plant-based treats.</p></div>
+<div><h4 class="font-bold">Q: Can I book ice creams for parties?</h4><p>A: Absolutely, reach out through our contact form.</p></div>
+</div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-16 px-8 bg-pink-100 text-center">
+<h2 class="text-4xl font-bold mb-4">Stay Updated 📩</h2>
+<p class="mb-6">Subscribe to get the latest offers & new flavors!</p>
+<form class="max-w-md mx-auto flex">
+<input type="email" placeholder="Enter your email" class="flex-1 p-3 rounded-l-lg border">
+<button class="px-6 bg-red-500 text-white font-bold rounded-r-lg hover:bg-red-600">Subscribe</button>
+</form>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-16 px-8 bg-white text-center">
+<h2 class="text-4xl font-bold mb-6">Get in Touch</h2>
+<form class="max-w-lg mx-auto bg-pink-50 shadow-lg rounded-2xl p-6">
+<input type="text" placeholder="Your Name" class="w-full mb-4 p-3 border rounded-lg">
+<input type="email" placeholder="Your Email" class="w-full mb-4 p-3 border rounded-lg">
+<textarea placeholder="Your Message" rows="4" class="w-full mb-4 p-3 border rounded-lg"></textarea>
+<button type="submit" class="w-full py-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition">Send Message</button>
+</form>
+</section>
+
+<!-- Live Chat / Chatbot -->
+<div id="livechat" class="fixed bottom-6 right-6 z-50">
+  <button id="chat-btn" class="bg-red-500 text-white rounded-full p-4 shadow-lg text-lg font-bold hover:bg-red-600">Chat</button>
+  <div id="chatbox" class="hidden bg-white border w-80 p-4 rounded-lg shadow-2xl mt-2">
+    <div id="chatlog" class="h-40 overflow-y-auto"></div>
+    <input id="chatinput" type="text" placeholder="Ask me anything..." class="mt-2 w-full p-2 border rounded">
+    <button id="sendchat" class="mt-1 bg-red-500 text-white font-bold px-4 py-1 rounded hover:bg-red-600">Send</button>
+  </div>
+</div>
+
+<section class="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-sky-200 to-white overflow-hidden">
+  <!-- Melting Earth -->
+  <div class="relative">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" 
+         alt="Melting Earth" 
+         class="w-64 h-64 rounded-full animate-melt border-4 border-white shadow-xl" />
+    <!-- Dripping Effect -->
+    <!-- Dripping Water Drop -->
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-14 bg-blue-400 animate-drip water-drop"></div>
+
+  </div>
+
+  <!-- Message -->
+  <h2 class="text-2xl md:text-3xl font-bold text-center mt-6 text-rose-600 drop-shadow-lg">
+    Enjoy responsibly – Save the planet, save the ice cream 🌍🍦
+  </h2>
+</section>
+
+
+<!-- Footer -->
+<footer class="py-6 text-center bg-gray-800 text-white">
+<p>© 2025 Kwality Wall’s | Hackathon MVP 🚀</p>
+</footer>
+
+
+<!-- JS for INTERACTIVITY -->
+<script>
+/* ------------------ REWARD SYSTEM ------------------ */
+const reward = {
+  points: 0,
+  badges: [],
+  flavorUnlocks: []
+};
+
+function updateBadges() {
+  const badgeArea = document.getElementById('user-badges');
+  let out = '';
+  if (reward.points > 0) out += `<span class="badge">Points: ${reward.points}</span>`;
+  for (const badge of reward.badges) out += `<span class="badge">${badge}</span>`;
+  if (reward.flavorUnlocks.length) {
+    for (const f of reward.flavorUnlocks) out += `<span class="badge">Unlocked: ${f}</span>`;
+  }
+  badgeArea.innerHTML = out;
+}
+updateBadges();
+
+/* ------------- SPIN THE WHEEL - Modified for REWARDS -------------- */
+const wheelItems = [
+  {name:"Ice Cream Tub", emoji:"🍦", img:"https://i.ibb.co/6rZkpwM/tub.png"},
+  {name:"Sundae", emoji:"🍧", img:"https://i.ibb.co/fvYgTfD/sundae.png"},
+  {name:"Ice Cream Cake", emoji:"🍪", img:"https://i.ibb.co/k8WyZ2Z/cake.png"},
+  {name:"Cone", emoji:"🍫", img:"https://i.ibb.co/HrFY4Yy/cone.png"}
+];
+
+function spinWheel(){
+  const wheel = document.getElementById("wheel");
+  const result = document.getElementById("wheel-result");
+  const rewardInfo = document.getElementById("reward-info");
+  // choose rotation
+  const deg = 720 + Math.floor(Math.random() * 360);
+  // Fix: use proper string for transform
+  wheel.style.transform = `rotate(${deg}deg)`;
+  // after animation
+  setTimeout(() => {
+    const selected = wheelItems[Math.floor(Math.random() * wheelItems.length)];
+    // use proper template string to set innerHTML
+    result.innerHTML = `<img src="${selected.img}" class="inline w-12 h-12 mr-2" alt="sel"> ${selected.emoji} You won: <b>${selected.name}</b>! 🎉`;
+    reward.points += 10;
+    updateBadges();
+    rewardInfo.innerText = "You earned 10 points! 🎁";
+    // FLAVOR unlock at multiples of 50pts
+    if (reward.points % 50 === 0) {
+      const flavor = ["Butterscotch", "Black Forest", "Choco Chip", "French Vanilla"][Math.floor(Math.random() * 4)];
+      if (!reward.flavorUnlocks.includes(flavor)) {
+        reward.flavorUnlocks.push(flavor);
+        updateBadges();
+        rewardInfo.innerText += `\nFlavor unlocked: ${flavor}!`;
+      }
+    }
+    if (reward.points === 10) { reward.badges.push("First Spin!"); updateBadges(); }
+  }, 4200); // slightly > 4s to match transition
+}
+
+/* ----------- FALLING ICE CREAMS -------------- */
+function createIcecream(){
+  const ic = document.createElement("img");
+  ic.src = "https://i.ibb.co/4fL7vFw/icecream1.png";
+  ic.className = "icecream";
+  ic.style.left = Math.random() * 100 + "vw";
+  ic.style.animationDuration = (3 + Math.random() * 5) + "s";
+  document.body.appendChild(ic);
+  setTimeout(()=>ic.remove(), 10000);
+}
+setInterval(createIcecream, 500);
+
+/* -------- PARALLAX EFFECT BACKGROUNDS -------- */
+const brandsBg = document.getElementById("brands-bg");
+const galleryBg = document.getElementById("gallery-bg");
+window.addEventListener("scroll", () => {
+  const scroll = window.scrollY;
+  if (brandsBg) brandsBg.style.transform = `translateY(${scroll * 0.2}px)`;
+  if (galleryBg) galleryBg.style.transform = `translateY(${scroll * 0.15}px)`;
+});
+
+/* --------- PRODUCT UNBOXING ANIMATION ON HOVER ---------- */
+document.querySelectorAll('.product-card').forEach(card=>{
+  card.addEventListener('mouseenter', ()=>{
+    const unbox = card.querySelector('.unbox-container');
+    if(unbox) { unbox.classList.remove('hidden'); unbox.classList.add('unbox-animate'); }
+  });
+  card.addEventListener('mouseleave', ()=>{
+    const unbox = card.querySelector('.unbox-container');
+    if(unbox) { unbox.classList.add('hidden'); unbox.classList.remove('unbox-animate'); }
+  });
+});
+
+/* -------------- SCOOP STACKING MINI-GAME ---------------- */
+let scoopTimeout, scoopCount;
+const scoopImgs = [
+  "https://i.ibb.co/4fL7vFw/icecream1.png","https://i.ibb.co/6rZkpwM/tub.png","https://i.ibb.co/fvYgTfD/sundae.png"
+];
+
+document.getElementById('start-scoop').onclick = function() {
+  scoopCount = 0;
+  let n = 0, scoopStack = document.getElementById('scoop-stack');
+  scoopStack.innerHTML = '';
+  document.getElementById('scoop-result').innerText = '';
+  document.getElementById('scoop-timer').innerText = "15";
+  function addScoop() {
+    if (n > 15) return;
+    const img = scoopImgs[Math.floor(Math.random() * scoopImgs.length)];
+    let sco = document.createElement('img');
+    sco.src = img;
+    sco.className = "inline-block mx-1 w-12 h-12 scoop-card cursor-pointer";
+    sco.onclick = function() {
+      if (!sco.classList.contains('selected')) {
+        sco.classList.add('selected');
+        scoopCount++; addScoop();
+      }
+    };
+    scoopStack.appendChild(sco);
+    n++;
+  }
+  addScoop();
+  let t = 15;
+  scoopTimeout = setInterval(()=>{
+    t--;
+    document.getElementById('scoop-timer').innerText = t;
+    if (t <= 0) {
+      clearInterval(scoopTimeout);
+      let bonus = Math.floor(scoopCount / 5) * 10;
+      reward.points += scoopCount + bonus;
+      let msg = `Stacked ${scoopCount} scoops! Bonus: ${bonus}. Points earned: ${scoopCount + bonus}`;
+      if (scoopCount >= 12 && !reward.badges.includes("Stack Master")) { reward.badges.push("Stack Master"); msg += "\nBadge unlocked: Stack Master!"; }
+      document.getElementById('scoop-result').innerText = msg;
+      updateBadges();
+      scoopStack.innerHTML = '';
+    }
+  }, 1000);
+};
+
+/* --------- ICECREAM MEMORY MATCH MINI-GAME ----------- */
+let memoryFirst = null, memorySecond = null;
+const memoryImgs = [
+  "https://i.ibb.co/4fL7vFw/icecream1.png",
+  "https://i.ibb.co/6rZkpwM/tub.png",
+  "https://i.ibb.co/fvYgTfD/sundae.png",
+  "https://i.ibb.co/k8WyZ2Z/cake.png",
+];
+
+document.getElementById('start-memory').onclick = function() {
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML = "";
+  document.getElementById('memory-status').innerText = "";
+  let arr = [...memoryImgs, ...memoryImgs];
+  arr = arr.sort(()=>Math.random() - 0.5);
+  let matched = 0;
+  arr.forEach((img, i) => {
+    let card = document.createElement('div');
+    card.className = "memory-card cursor-pointer flex items-center justify-center w-16 h-16 bg-gray-50";
+    card.dataset.img = img;
+    card.innerHTML = `<span class="text-xl">?</span>`;
+    card.onclick = function(){
+      if (card.classList.contains('selected') || memorySecond) return;
+      card.innerHTML = `<img src="${img}" class="w-10 h-10 mx-auto" alt="mem">`;
+      card.classList.add('selected');
+      if (!memoryFirst) { memoryFirst = card; }
+      else {
+        memorySecond = card;
+        if (memoryFirst.dataset.img === memorySecond.dataset.img) {
+          matched += 2;
+          setTimeout(() => {
+            memoryFirst.classList.add('bg-green-100');
+            memorySecond.classList.add('bg-green-100');
+            memoryFirst = null; memorySecond = null;
+          }, 700);
+          if (matched === 8) {
+            document.getElementById('memory-status').innerText = "All matched! +30pts, Badge: Memory Pro";
+            reward.points += 30;
+            if (!reward.badges.includes("Memory Pro")) { reward.badges.push("Memory Pro"); }
+            updateBadges();
+          }
+        } else {
+          setTimeout(() => {
+            memoryFirst.classList.remove('selected');
+            memorySecond.classList.remove('selected');
+            memoryFirst.innerHTML = '<span class="text-xl">?</span>';
+            memorySecond.innerHTML = '<span class="text-xl">?</span>';
+            memoryFirst = null; memorySecond = null;
+          }, 900);
+        }
+      }
+    };
+    grid.appendChild(card);
+  });
+};
+
+/* -------- COMMUNITY WALL: USER IMAGE UPLOADS (local ONLY) -------- */
+const form = document.getElementById("user-photo-form");
+const wall = document.getElementById("community-wall");
+form.onsubmit = function(e){
+  e.preventDefault();
+  const file = document.getElementById('user-photo').files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const caption = document.getElementById('user-caption').value;
+    const div = document.createElement('div');
+    div.className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center";
+    div.innerHTML = `<img src="${ev.target.result}" class="rounded-xl w-full h-48 object-cover mb-2" alt="user"><p class="text-sm text-gray-600">${caption||'A sweet memory!'}</p>`;
+    wall.prepend(div);
+    form.reset();
+    reward.points += 5;
+    if (reward.points > 0 && !reward.badges.includes("Wall Contributor")){ reward.badges.push("Wall Contributor");}
+    updateBadges();
+  };
+  reader.readAsDataURL(file);
+};
+
+/* ----------- INTERACTIVE GLOBAL TIMELINE ------------ */
+const timelineEvents = [
+  { year: '1995', title: "Kwality Wall's Founded", desc: "Our journey of delight begins in India!" },
+  { year: '2002', title: "First Sundae Launched", desc: "The iconic layered sundaes take over!" },
+  { year: '2011', title: "Global Expansion", desc: "Now loved in 20+ countries!" },
+  { year: '2023', title: "Vegan Series", desc: "First plant-based products hit the shelves." },
+  { year: '2024', title: "B2B & Party Bookings", desc: "Now catering to celebrations nationwide." }
+];
+const tline = document.getElementById('timeline-events');
+timelineEvents.forEach((ev, i) => {
+  let d = document.createElement('div');
+  d.className = `relative flex items-center gap-6 ${i%2===0?'justify-start':'justify-end'}`;
+  const popupId = `timeline-popup-${i}`;
+  d.innerHTML = `<div class="w-40 px-4 py-3 bg-pink-400 text-white font-bold rounded-xl cursor-pointer hover:scale-105 timeline-btn" tabindex="0" data-i="${i}">${ev.year}</div>
+    <div class="hidden absolute z-10 left-1/2 top-6 bg-white shadow-lg rounded-xl px-6 py-4 text-left max-w-xs timeline-popup" id="${popupId}">
+      <h4 class="font-bold text-red-500">${ev.title}</h4>
+      <p>${ev.desc}</p>
+      <img src="assets/timeline${i}.jpg" class="mt-2 rounded-md w-32" alt="timeline">
+    </div>
+  `;
+  tline.appendChild(d);
+  const btn = d.querySelector('.timeline-btn');
+  const popup = d.querySelector(`#${popupId}`);
+  btn.addEventListener('mouseover', () => { popup.classList.remove('hidden'); });
+  btn.addEventListener('mouseout', () => { popup.classList.add('hidden'); });
+  btn.addEventListener('focus', () => { popup.classList.remove('hidden'); });
+  btn.addEventListener('blur', () => { popup.classList.add('hidden'); });
+});
+
+/* ------------ SIMPLE LIVE CHATBOT ------------- */
+const chatBtn = document.getElementById('chat-btn');
+const chatBox = document.getElementById('chatbox');
+const chatLog = document.getElementById('chatlog');
+chatBtn.onclick = ()=>{chatBox.classList.toggle('hidden');};
+document.getElementById('sendchat').onclick = sendChatMessage;
+document.getElementById('chatinput').onkeydown = function(e){ if(e.key === 'Enter') sendChatMessage(); };
+
+function sendChatMessage(){
+  const msgIn = document.getElementById('chatinput');
+  if(!msgIn.value.trim()) return;
+  let q = msgIn.value.trim();
+  chatLog.innerHTML += `<div class="text-right text-blue-500 font-bold">${escapeHtml(q)}</div>`;
+  setTimeout(()=>{
+    let answer = simpleChatResponse(q);
+    chatLog.innerHTML += `<div class="text-left text-gray-700">${escapeHtml(answer)}</div>`;
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }, 500);
+  msgIn.value = "";
+}
+
+// small helper to escape HTML
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"'`]/g, function (s) {
+    return ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#x60;'
+    })[s];
+  });
+}
+
+function simpleChatResponse(q){
+  const lq = q.toLowerCase();
+  if(lq.includes("order")||lq.includes("buy")) return "Order on Swiggy, Zomato or nearest store, or use the Contact form for bulk/party orders! 🍨";
+  if(lq.includes("book")&&lq.includes("party")) return "We offer party bookings! Please fill the Contact form for personalized packages!";
+  if(lq.includes("flavor")||lq.includes("suggest")) return "Try our Choco Chip Dream or Mango Duet flavors!";
+  if(lq.includes("hello")||lq.includes("hi")) return "Hey there! How can I make your day sweeter?";
+  if(lq.includes("vegan")) return "Yes! We have a growing range of plant-based and vegan choices 🌱";
+  if(lq.includes("reward")||lq.includes("points")) return `You currently have ${reward.points} points and badges: ${reward.badges.join(", ") || 'none'}!`;
+  return "Our team will get back soon, or check out the FAQ!";
+}
+</script>
+</body>
+</html>
